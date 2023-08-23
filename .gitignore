@@ -24,3 +24,6 @@ yarn-error.log
 .vscode/*
 .history/*
 !.vscode/settings.json
+
+.cypress.env.json
+/.env
