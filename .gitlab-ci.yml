@@ -1,0 +1,11 @@
+image: $CI_REGISTRY/smight-internal/docker-pipeline-image:2-0-0
+
+stages:
+  - e2e
+
+e2e:
+  stage: e2e
+  image: cypress/base:18.16.0
+  script:
+    - npm ci
+    - npx cypress run

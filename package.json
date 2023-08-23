@@ -1,0 +1,14 @@
+{
+  "name": "tscypressautomation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cypress": "^12.17.3",
+    "cypress-keycloak": "^2.0.1"
+  },
+  "devDependencies": {
+    "cypress-xpath": "^2.0.1",
+    "typescript": "^5.1.6"
+  }
+}
