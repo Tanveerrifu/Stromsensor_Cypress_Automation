@@ -1,5 +1,4 @@
 import "cypress-keycloak";
-import "cypress-xpath";
 
 import { clickOn, getRandomInt, type } from "../helpers/cypress-utils";
 
@@ -19,22 +18,19 @@ describe("DeviceAdmin", () => {
   });
 
   it("should add a station to the list", () => {
-    clickOn(
-      "#mat-expansion-panel-header-0 > .mat-content > .mat-expansion-panel-header-title"
-    );
 
     // This should be replaced once the element has an ID in deviceadmin
-    clickOn(
-      "#cdk-accordion-child-0 > .mat-expansion-panel-body > :nth-child(2)"
-    );
+    cy.get('#cdk-accordion-child-0 > .mat-expansion-panel-body > :nth-child(2) > span').click();
 
-    const stationName = "MYGOD-E-UST-259";
+    const stationName = "Sriganesh";
     const stationId = "MYGOD-E-UST-259";
     const street = "Zeppelinstraße";
     const houseNumber = getRandomInt(1, 100);
     const zipCode = "76185";
     const city = "Karlsruhe";
     const country = "Germany";
+    const sensorID = "259916A76913C2EE";
+    const routerId = "B06289070202";
 
     type('[formcontrolname="stationName"]', stationName);
     type('[formcontrolname="stationId"]', stationId);
@@ -52,35 +48,55 @@ describe("DeviceAdmin", () => {
     cy.get('[formcontrolname="lat"]').should("be.empty");
     cy.get('[formcontrolname="lng"]').should("be.empty");
 
-    cy.xpath(
-      "//span[normalize-space()='Position anhand der Adresse ermitteln']"
-    ).click();
+    clickOn("#getPositionButton");
 
     //configure
-    clickOn("#mat-tab-label-0-1 > .mat-tab-label-content");
-    cy.xpath("//div[contains(text(),'+')]").click();
+    cy.contains("Abgänge konfigurieren").click();
+    clickOn("#hinweiseSelect");
+    cy.contains("Oberer Schwellwert in A").click();
+
+    cy.contains(" + ").click();
     type('[formcontrolname="outletLabel"]', "100");
 
     //save config
 
-    clickOn(":nth-child(5) > .mat-focus-indicator");
+    clickOn("#saveAddButton");
 
     //check save status
-    clickOn(
-      "#mat-expansion-panel-header-0 > .mat-content > .mat-expansion-panel-header-title"
-    );
+    clickOn("#mat-expansion-panel-header-0");
     cy.get(
       '[data-placeholder="Suche nach Stationsnummer / Stationsname / Gateway-ID / Adresse"]'
     )
       .type(`${stationName}{enter}`)
-      .wait(3000);
+      .wait(13000);
     cy.get(
       '[data-placeholder="Suche nach Stationsnummer / Stationsname / Gateway-ID / Adresse"]'
     ).type("{enter}");
-    cy.contains(stationName).click();
+
+    //check station
+
+    cy.get(".mat-row-link").click();
+
+    //giving sensor id and router id
+    type('[formcontrolname="routerId"]', routerId);
+    clickOn("#mat-tab-label-2-1");
+    type('[formcontrolname="sensorId"]', sensorID);
+
+    //updating
+    clickOn("#updateStationButton");
+
+    // cy.contains(stationName).click();
 
     //delete station
-    clickOn(":nth-child(6) > .mat-focus-indicator");
-    cy.xpath("//span[normalize-space()='Ja']").click();
+    // clickOn(":nth-child(6) > .mat-focus-indicator");
+    // cy.xpath("//span[normalize-space()='Ja']").click();
   });
+
+  it("click iq", () => {
+    cy.visit("https://test-iq.smight-mgt.de/").wait(5000);
+    cy.get('[data-cy="overview-gdpr-button"] > .mdc-button__label').click().wait(5000);
+    type("#mat-input-0","AHTET-E-UST-021");
+
+  });
+
 });
